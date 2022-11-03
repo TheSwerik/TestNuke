@@ -32,21 +32,19 @@ class Build : NukeBuild
     GitHubActions GitHubActions => GitHubActions.Instance;
 
     Target Clean => _ => _
-                         .Before(Restore)
-                         .Executes(() =>
-                                   {
-                                       DeleteFile(ArtifactPath);
-                                       DeleteDirectory(PublishDirectory);
-                                   });
+                        .Executes(() =>
+                                  {
+                                      DeleteFile(ArtifactPath);
+                                      DeleteDirectory(PublishDirectory);
+                                  });
 
     Target Restore => _ => _
-                          .Executes(() =>
-                                    {
-                                        DotNetRestore(_ => _
-                                                          .SetProjectFile(Solution));
-                                        DotNetRestore(_ => _
-                                                          .SetProjectFile(BuildProjectFile));
-                                    });
+                           .DependsOn(Clean)
+                           .Executes(() =>
+                                     {
+                                         DotNetRestore(_ => _
+                                                           .SetProjectFile(Solution));
+                                     });
 
     Target Compile => _ => _
                            .DependsOn(Restore)
