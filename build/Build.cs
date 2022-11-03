@@ -67,7 +67,8 @@ class Build : NukeBuild
                                       Log.Information("RootDirectory = {Value}", RootDirectory);
                                       Log.Information("BuildProjectDirectory = {Value}", BuildProjectDirectory);
                                       Log.Information("IsLocalBuild = {Value}", IsLocalBuild);
-                                      Log.Information("GitVersion = {Value}", GitVersion.MajorMinorPatch);
+                                      if (GitVersion is not null)
+                                          Log.Information("GitVersion = {Value}", GitVersion.MajorMinorPatch);
                                       if (GitHubActions is null) return;
                                       Log.Information("Branch = {Branch}", GitHubActions.Ref);
                                       Log.Information("Commit = {Commit}", GitHubActions.Sha);
