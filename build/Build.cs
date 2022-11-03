@@ -1,9 +1,18 @@
 using Nuke.Common;
+using Nuke.Common.CI.GitHubActions;
+using Serilog;
 
+[GitHubActions(
+    "continuous",
+    GitHubActionsImage.UbuntuLatest,
+    On = new[] { GitHubActionsTrigger.Push },
+    InvokedTargets = new[] { nameof(Compile) })]
 class Build : NukeBuild
 {
     [Parameter("Configuration to build - Default is 'Debug' (local) or 'Release' (server)")]
     readonly Configuration Configuration = IsLocalBuild ? Configuration.Debug : Configuration.Release;
+
+    GitHubActions GitHubActions => GitHubActions.Instance;
 
     Target Clean => _ => _
                          .Before(Restore)
@@ -21,6 +30,15 @@ class Build : NukeBuild
                            .Executes(() =>
                                      {
                                      });
+
+    Target Print => _ => _
+                        .Executes(() =>
+                                  {
+                                      Log.Information("Branch = {Branch}", GitHubActions.Ref);
+                                      Log.Information("Commit = {Commit}", GitHubActions.Sha);
+                                      Log.Information("RunNumber = {Commit}", GitHubActions.RunNumber);
+                                      Log.Information("RunId = {Commit}", GitHubActions.RunId);
+                                  });
 
     /// Support plugins are available for:
     /// - JetBrains ReSharper        https://nuke.build/resharper
