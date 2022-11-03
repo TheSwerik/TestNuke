@@ -26,6 +26,8 @@
     $env:DOTNET_SKIP_FIRST_TIME_EXPERIENCE = 1
     $env:DOTNET_CLI_TELEMETRY_OPTOUT = 1
     $env:DOTNET_MULTILEVEL_LOOKUP = 0
+    $env:BUILD_PROJECT_FILE = "build/_build.csproj"
+    $BUILD_PROJECT_FILE = "build/_build.csproj"
 
     ###########################################################################
     # EXECUTION
