@@ -36,7 +36,7 @@ class Build : NukeBuild
                                      });
 
     Target Print => _ => _
-                         .OnlyWhenStatic(() => IsLocalBuild)
+                         .OnlyWhenStatic(() => !IsLocalBuild)
                          .Executes(() =>
                                    {
                                        Log.Information("IsLocalBuild = {Value}", IsLocalBuild);
