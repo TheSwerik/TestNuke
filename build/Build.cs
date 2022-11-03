@@ -7,14 +7,14 @@ using Serilog;
     "continuous",
     GitHubActionsImage.UbuntuLatest,
     On = new[] { GitHubActionsTrigger.Push },
-    InvokedTargets = new[] { nameof(Compile) }
+    InvokedTargets = new[] { nameof(Print) }
 )]
 class Build : NukeBuild
 {
     [Parameter("Configuration to build - Default is 'Debug' (local) or 'Release' (server)")]
     readonly Configuration Configuration = IsLocalBuild ? Configuration.Debug : Configuration.Release;
 
-    [GitVersion] readonly GitVersion GitVersion;
+    [GitVersion(Framework = "net6.0")] readonly GitVersion GitVersion;
     GitHubActions GitHubActions => GitHubActions.Instance;
 
     Target Clean => _ => _
@@ -36,17 +36,16 @@ class Build : NukeBuild
                                      });
 
     Target Print => _ => _
-                         .OnlyWhenStatic(() => !IsLocalBuild)
-                         .Executes(() =>
-                                   {
-                                       Log.Information("IsLocalBuild = {Value}", IsLocalBuild);
-                                       if (IsLocalBuild) return;
-                                       Log.Information("GitVersion = {Value}", GitVersion.MajorMinorPatch);
-                                       Log.Information("Branch = {Branch}", GitHubActions.Ref);
-                                       Log.Information("Commit = {Commit}", GitHubActions.Sha);
-                                       Log.Information("RunNumber = {Commit}", GitHubActions.RunNumber);
-                                       Log.Information("RunId = {Commit}", GitHubActions.RunId);
-                                   });
+                        .Executes(() =>
+                                  {
+                                      Log.Information("IsLocalBuild = {Value}", IsLocalBuild);
+                                      Log.Information("GitVersion = {Value}", GitVersion.MajorMinorPatch);
+                                      if (GitHubActions is null) return;
+                                      Log.Information("Branch = {Branch}", GitHubActions.Ref);
+                                      Log.Information("Commit = {Commit}", GitHubActions.Sha);
+                                      Log.Information("RunNumber = {Commit}", GitHubActions.RunNumber);
+                                      Log.Information("RunId = {Commit}", GitHubActions.RunId);
+                                  });
 
     /// Support plugins are available for:
     /// - JetBrains ReSharper        https://nuke.build/resharper
