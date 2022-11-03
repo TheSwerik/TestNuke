@@ -1,5 +1,4 @@
 {
   "$schema": "./build.schema.json",
-  "Solution": "TestNuke.sln",
-  "BUILD_PROJECT_FILE": "build/_build.csproj"
+  "Solution": "Test.sln"
 }

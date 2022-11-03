@@ -82,7 +82,7 @@ class Build : NukeBuild
                         .Executes(() =>
                                   {
                                       DotNetPublish(_ => _
-                                                         .SetConfiguration("Release")
+                                                         .SetConfiguration(Configuration)
                                                          .SetProject(Solution)
                                                          .SetOutput(PublishDirectory));
                                       CompressZip(
