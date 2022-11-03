@@ -44,6 +44,8 @@ class Build : NukeBuild
                                     {
                                         DotNetRestore(_ => _
                                                           .SetProjectFile(Solution));
+                                        DotNetRestore(_ => _
+                                                          .SetProjectFile(BuildProjectFile));
                                     });
 
     Target Compile => _ => _
