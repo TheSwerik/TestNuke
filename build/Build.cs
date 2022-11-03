@@ -37,7 +37,7 @@ class Build : NukeBuild
                                       Log.Information("Branch = {Branch}", GitHubActions.Ref);
                                       Log.Information("Commit = {Commit}", GitHubActions.Sha);
                                       Log.Information("RunNumber = {Commit}", GitHubActions.RunNumber);
-                                      Log.Information("RunId = {Commit}", GitHubActions.RunId);
+                                      // Log.Information("RunId = {Commit}", GitHubActions.RunId);
                                   });
 
     /// Support plugins are available for:
