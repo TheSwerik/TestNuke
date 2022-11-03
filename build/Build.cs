@@ -2,12 +2,14 @@ using System.IO;
 using System.IO.Compression;
 using Nuke.Common;
 using Nuke.Common.CI.GitHubActions;
+using Nuke.Common.IO;
 using Nuke.Common.ProjectModel;
 using Nuke.Common.Tools.DotNet;
 using Nuke.Common.Tools.GitVersion;
 using Serilog;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
 using static Nuke.Common.IO.CompressionTasks;
+using static Nuke.Common.IO.FileSystemTasks;
 
 [GitHubActions(
     "continuous",
@@ -17,10 +19,14 @@ using static Nuke.Common.IO.CompressionTasks;
 )]
 class Build : NukeBuild
 {
+    readonly AbsolutePath ArtifactPath = RootDirectory / "publish.zip";
+
     [Parameter("Configuration to build - Default is 'Debug' (local) or 'Release' (server)")]
     readonly Configuration Configuration = IsLocalBuild ? Configuration.Debug : Configuration.Release;
 
     [GitVersion(Framework = "net6.0")] readonly GitVersion GitVersion;
+
+    readonly AbsolutePath PublishDirectory = RootDirectory / "publish";
 
     [Solution] readonly Solution Solution;
     GitHubActions GitHubActions => GitHubActions.Instance;
@@ -29,6 +35,8 @@ class Build : NukeBuild
                          .Before(Restore)
                          .Executes(() =>
                                    {
+                                       DeleteFile(ArtifactPath);
+                                       DeleteDirectory(PublishDirectory);
                                    });
 
     Target Restore => _ => _
@@ -69,17 +77,16 @@ class Build : NukeBuild
 
     Target Pack => _ => _
                         .DependsOn(Compile)
-                        .Produces(RootDirectory / "*.zip")
+                        .Produces(ArtifactPath)
                         .Executes(() =>
                                   {
-                                      var PublishDirectory = RootDirectory / "publish";
                                       DotNetPublish(_ => _
                                                          .SetConfiguration("Release")
                                                          .SetProject(Solution)
                                                          .SetOutput(PublishDirectory));
                                       CompressZip(
                                           PublishDirectory,
-                                          RootDirectory / "publsh.zip",
+                                          ArtifactPath,
                                           // filter: x => !x.Extension.EqualsAnyOrdinalIgnoreCase(ExcludedExtensions),
                                           compressionLevel: CompressionLevel.SmallestSize,
                                           fileMode: FileMode.CreateNew);

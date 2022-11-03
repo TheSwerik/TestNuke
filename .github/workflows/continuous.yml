@@ -35,5 +35,5 @@ jobs:
         run: ./build.cmd Pack
       - uses: actions/upload-artifact@v1
         with:
-          name: TestNuke
-          path: 
+          name: publish.zip
+          path: publish.zip
