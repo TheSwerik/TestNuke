@@ -5,7 +5,6 @@ using Nuke.Common.CI.GitHubActions;
 using Nuke.Common.IO;
 using Nuke.Common.ProjectModel;
 using Nuke.Common.Tools.DotNet;
-using Nuke.Common.Tools.GitVersion;
 using Serilog;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
 using static Nuke.Common.IO.CompressionTasks;
@@ -23,8 +22,6 @@ class Build : NukeBuild
 
     [Parameter("Configuration to build - Default is 'Debug' (local) or 'Release' (server)")]
     readonly Configuration Configuration = IsLocalBuild ? Configuration.Debug : Configuration.Release;
-
-    [GitVersion(Framework = "net6.0")] readonly GitVersion GitVersion;
 
     readonly AbsolutePath PublishDirectory = RootDirectory / "publish";
 
@@ -67,8 +64,6 @@ class Build : NukeBuild
                                       Log.Information("RootDirectory = {Value}", RootDirectory);
                                       Log.Information("BuildProjectDirectory = {Value}", BuildProjectDirectory);
                                       Log.Information("IsLocalBuild = {Value}", IsLocalBuild);
-                                      if (GitVersion is not null)
-                                          Log.Information("GitVersion = {Value}", GitVersion.MajorMinorPatch);
                                       if (GitHubActions is null) return;
                                       Log.Information("Branch = {Branch}", GitHubActions.Ref);
                                       Log.Information("Commit = {Commit}", GitHubActions.Sha);
