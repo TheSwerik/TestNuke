@@ -86,9 +86,6 @@ class Build : NukeBuild
                                           // filter: x => !x.Extension.EqualsAnyOrdinalIgnoreCase(ExcludedExtensions),
                                           compressionLevel: CompressionLevel.SmallestSize,
                                           fileMode: FileMode.CreateNew);
-                                  })
-                        .Executes(() =>
-                                  {
                                   });
 
     /// Support plugins are available for:
